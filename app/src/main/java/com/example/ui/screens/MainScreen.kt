@@ -16,8 +16,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Newspaper
+import androidx.compose.material.icons.filled.Tag
+import androidx.compose.material.icons.outlined.Tag
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
 enum class AppNavTab(val title: String) {
     FEED("Berita"),
     BOOKMARKS("Tersimpan"),
-    SOURCES("Sumber")
+    TOPICS("Topik")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -245,17 +246,17 @@ fun MainScreen(
                         modifier = Modifier.testTag("tab_bookmarks")
                     )
 
-                    // Tab 3: Sumber & Info
+                    // Tab 3: Topik
                     NavigationBarItem(
-                        selected = currentTab == AppNavTab.SOURCES,
-                        onClick = { currentTab = AppNavTab.SOURCES },
+                        selected = currentTab == AppNavTab.TOPICS,
+                        onClick = { currentTab = AppNavTab.TOPICS },
                         icon = {
                             Icon(
-                                imageVector = if (currentTab == AppNavTab.SOURCES) Icons.Default.Language else Icons.Outlined.Language,
-                                contentDescription = "Sumber"
+                                imageVector = if (currentTab == AppNavTab.TOPICS) Icons.Default.Tag else Icons.Outlined.Tag,
+                                contentDescription = "Topik"
                             )
                         },
-                        label = { Text("Sumber") },
+                        label = { Text("Topik") },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Color.White,
                             selectedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -263,7 +264,7 @@ fun MainScreen(
                             unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                             unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         ),
-                        modifier = Modifier.testTag("tab_sources")
+                        modifier = Modifier.testTag("tab_topics")
                     )
                 }
             }
@@ -307,12 +308,11 @@ fun MainScreen(
                         )
                     }
 
-                    AppNavTab.SOURCES -> {
-                        SourcesScreen(
-                            isDarkMode = uiState.isDarkMode,
-                            onToggleDarkMode = { viewModel.toggleDarkMode() },
-                            onOpenPortalUrl = { url ->
-                                CustomTabsHelper.openNewsArticle(context, url, dynamicToolbarColor)
+                    AppNavTab.TOPICS -> {
+                        TopicsScreen(
+                            onTopicClick = { topicKeyword ->
+                                viewModel.searchTopic(topicKeyword)
+                                currentTab = AppNavTab.FEED
                             }
                         )
                     }

@@ -99,6 +99,17 @@ class NewsViewModel(
         recomputeArticles()
     }
 
+    fun searchTopic(topicKeyword: String) {
+        _uiState.value = _uiState.value.copy(
+            selectedCategory = NewsCategory.BERITA_UTAMA,
+            selectedSource = null,
+            searchQuery = topicKeyword,
+            isSearchBarVisible = true,
+            userToastMessage = "Menampilkan topik: $topicKeyword"
+        )
+        recomputeArticles()
+    }
+
     fun toggleSearchBar() {
         val willShow = !_uiState.value.isSearchBarVisible
         _uiState.value = _uiState.value.copy(

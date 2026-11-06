@@ -67,4 +67,21 @@ class ExampleRobolectricTest {
         assertNotNull(formatted)
         assertTrue(formatted.isNotBlank())
     }
+
+    @Test
+    fun `test topic catalog contains required categories and topics`() {
+        val topics = com.example.data.model.TopicCatalog.allTopics
+        assertTrue(topics.any { it.name.equals("PPPK", ignoreCase = true) })
+        assertTrue(topics.any { it.name.contains("Sepakbola", ignoreCase = true) })
+        assertTrue(topics.any { it.category.contains("Olahraga", ignoreCase = true) })
+        assertTrue(topics.any { it.category.contains("Kota", ignoreCase = true) })
+        assertTrue(topics.size >= 50)
+    }
+
+    @Test
+    fun `test nav_topics string resource`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val navTopics = context.getString(R.string.nav_topics)
+        assertEquals("Topik", navTopics)
+    }
 }

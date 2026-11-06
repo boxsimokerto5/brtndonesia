@@ -2,6 +2,7 @@
     <string name="app_name">Berita Indonesia</string>
     <string name="nav_feed">Berita</string>
     <string name="nav_bookmarks">Tersimpan</string>
+    <string name="nav_topics">Topik</string>
     <string name="nav_sources">Sumber &amp; Info</string>
     <string name="search_hint">Cari berita terkini...</string>
     <string name="breaking_news">Headline Utama</string>
