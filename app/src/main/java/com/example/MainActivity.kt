@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.data.local.AppDatabase
 import com.example.data.repository.NewsRepository
@@ -23,7 +25,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel: NewsViewModel = viewModel(factory = viewModelFactory)
-            MyApplicationTheme {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            MyApplicationTheme(darkTheme = uiState.isDarkMode) {
                 MainScreen(viewModel = viewModel)
             }
         }

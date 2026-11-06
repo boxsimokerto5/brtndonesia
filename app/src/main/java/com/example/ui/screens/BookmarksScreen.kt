@@ -12,17 +12,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.data.model.NewsArticle
 import com.example.ui.components.NewsCard
-import com.example.ui.theme.DarkNusantaraBackground
 import com.example.ui.theme.NusantaraBlueActive
-import com.example.ui.theme.TextPrimaryWhite
-import com.example.ui.theme.TextSecondaryMuted
 
 @Composable
 fun BookmarksScreen(
@@ -38,8 +34,8 @@ fun BookmarksScreen(
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
-            title = { Text("Hapus Semua Simpanan?", color = TextPrimaryWhite) },
-            text = { Text("Apakah Anda yakin ingin menghapus semua artikel yang telah disimpan dari perangkat?", color = TextSecondaryMuted) },
+            title = { Text("Hapus Semua Simpanan?", color = MaterialTheme.colorScheme.onSurface) },
+            text = { Text("Apakah Anda yakin ingin menghapus semua artikel yang telah disimpan dari perangkat?", color = MaterialTheme.colorScheme.onSurfaceVariant) },
             containerColor = MaterialTheme.colorScheme.surface,
             confirmButton = {
                 TextButton(
@@ -53,7 +49,7 @@ fun BookmarksScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showClearDialog = false }) {
-                    Text("Batal", color = TextPrimaryWhite)
+                    Text("Batal", color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         )
@@ -62,7 +58,7 @@ fun BookmarksScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkNusantaraBackground)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("bookmarks_screen")
     ) {
         // Header Row with count and clear button
@@ -78,12 +74,12 @@ fun BookmarksScreen(
                     text = "Artikel Tersimpan",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimaryWhite
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
                     text = "${bookmarkedArticles.size} artikel siap dibaca",
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondaryMuted
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
@@ -121,7 +117,7 @@ fun BookmarksScreen(
             ) {
                 Surface(
                     shape = RoundedCornerShape(24.dp),
-                    color = NusantaraBlueActive.copy(alpha = 0.2f),
+                    color = NusantaraBlueActive.copy(alpha = 0.15f),
                     modifier = Modifier.size(80.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
@@ -138,13 +134,13 @@ fun BookmarksScreen(
                     text = "Belum Ada Artikel Tersimpan",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimaryWhite
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Tekan ikon bookmark pada artikel mana pun di feed untuk menyimpannya ke daftar bacaan offline ini.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondaryMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }

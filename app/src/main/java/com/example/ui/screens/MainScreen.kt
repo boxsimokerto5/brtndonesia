@@ -9,7 +9,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.BookmarkBorder
@@ -29,12 +32,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.ui.theme.DarkNusantaraBackground
-import com.example.ui.theme.DarkNusantaraSurface
+import com.example.ui.components.OfficialWebsitesDrawerContent
 import com.example.ui.theme.NusantaraBlueActive
-import com.example.ui.theme.TextPrimaryWhite
 import com.example.ui.viewmodel.NewsViewModel
 import com.example.util.CustomTabsHelper
+import kotlinx.coroutines.launch
 
 enum class AppNavTab(val title: String) {
     FEED("Berita"),
@@ -50,11 +52,14 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val bookmarkedArticles by viewModel.bookmarkedArticles.collectAsStateWithLifecycle()
 
     var currentTab by remember { mutableStateOf(AppNavTab.FEED) }
-    val darkToolbarColor = DarkNusantaraBackground.toArgb()
+    val dynamicToolbarColor = MaterialTheme.colorScheme.surface.toArgb()
 
     // Handle user toast feedback
     LaunchedEffect(uiState.userToastMessage) {
@@ -64,204 +69,253 @@ fun MainScreen(
         }
     }
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(DarkNusantaraBackground),
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkNusantaraBackground,
-                    titleContentColor = TextPrimaryWhite
-                ),
-                title = {
-                    if (uiState.isSearchBarVisible) {
-                        TextField(
-                            value = uiState.searchQuery,
-                            onValueChange = { viewModel.onSearchQueryChanged(it) },
-                            placeholder = { Text("Cari berita nusantara...", color = Color.Gray, fontSize = 15.sp) },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                            keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = TextPrimaryWhite,
-                                unfocusedTextColor = TextPrimaryWhite,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("search_text_field")
-                        )
-                    } else {
-                        // Title exactly matching user's screenshot: "BERITA NUSANTARA"
-                        Text(
-                            text = "BERITA NUSANTARA",
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontSize = 21.sp,
-                                fontWeight = FontWeight.Black,
-                                letterSpacing = 0.5.sp
-                            ),
-                            color = TextPrimaryWhite,
-                            modifier = Modifier.testTag("app_title_header")
-                        )
-                    }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            OfficialWebsitesDrawerContent(
+                onSelectPortal = { portal ->
+                    CustomTabsHelper.openNewsArticle(context, portal.siteUrl, dynamicToolbarColor)
+                    coroutineScope.launch { drawerState.close() }
                 },
-                actions = {
-                    if (uiState.isSearchBarVisible) {
+                onCloseDrawer = {
+                    coroutineScope.launch { drawerState.close() }
+                }
+            )
+        }
+    ) {
+        Scaffold(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    navigationIcon = {
                         IconButton(
                             onClick = {
-                                viewModel.toggleSearchBar()
-                                focusManager.clearFocus()
+                                coroutineScope.launch {
+                                    if (drawerState.isClosed) drawerState.open() else drawerState.close()
+                                }
                             },
-                            modifier = Modifier.testTag("close_search_button")
-                        ) {
-                            Icon(Icons.Default.Close, contentDescription = "Tutup", tint = TextPrimaryWhite)
-                        }
-                    } else {
-                        IconButton(
-                            onClick = { viewModel.toggleSearchBar() },
-                            modifier = Modifier.testTag("open_search_button")
+                            modifier = Modifier.testTag("burger_menu_button")
                         ) {
                             Icon(
-                                Icons.Default.Search,
-                                contentDescription = "Cari berita",
-                                tint = TextPrimaryWhite,
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Menu portal berita",
+                                tint = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.size(26.dp)
                             )
                         }
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            NavigationBar(
-                containerColor = DarkNusantaraBackground,
-                tonalElevation = 8.dp
-            ) {
-                // Tab 1: Berita
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.FEED,
-                    onClick = { currentTab = AppNavTab.FEED },
-                    icon = {
-                        Icon(
-                            imageVector = if (currentTab == AppNavTab.FEED) Icons.Default.Newspaper else Icons.Outlined.Newspaper,
-                            contentDescription = "Berita"
-                        )
                     },
-                    label = { Text("Berita") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.White,
-                        selectedTextColor = Color.White,
-                        indicatorColor = NusantaraBlueActive,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray
-                    ),
-                    modifier = Modifier.testTag("tab_feed")
-                )
-
-                // Tab 2: Tersimpan
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.BOOKMARKS,
-                    onClick = { currentTab = AppNavTab.BOOKMARKS },
-                    icon = {
-                        BadgedBox(
-                            badge = {
-                                if (bookmarkedArticles.isNotEmpty()) {
-                                    Badge(containerColor = NusantaraBlueActive) {
-                                        Text(bookmarkedArticles.size.toString(), color = Color.White)
-                                    }
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = if (currentTab == AppNavTab.BOOKMARKS) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
-                                contentDescription = "Tersimpan"
+                    title = {
+                        if (uiState.isSearchBarVisible) {
+                            TextField(
+                                value = uiState.searchQuery,
+                                onValueChange = { viewModel.onSearchQueryChanged(it) },
+                                placeholder = { Text("Cari berita indonesia...", fontSize = 15.sp) },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                                colors = TextFieldDefaults.colors(
+                                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("search_text_field")
+                            )
+                        } else {
+                            // Title: "BERITA INDONESIA"
+                            Text(
+                                text = "BERITA INDONESIA",
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Black,
+                                    letterSpacing = 0.5.sp
+                                ),
+                                color = MaterialTheme.colorScheme.onBackground,
+                                maxLines = 1,
+                                modifier = Modifier.testTag("app_title_header")
                             )
                         }
                     },
-                    label = { Text("Tersimpan") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.White,
-                        selectedTextColor = Color.White,
-                        indicatorColor = NusantaraBlueActive,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray
-                    ),
-                    modifier = Modifier.testTag("tab_bookmarks")
-                )
+                    actions = {
+                        // Theme Toggle Button (Light/Dark mode)
+                        IconButton(
+                            onClick = { viewModel.toggleDarkMode() },
+                            modifier = Modifier.testTag("toggle_theme_button")
+                        ) {
+                            Icon(
+                                imageVector = if (uiState.isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                contentDescription = if (uiState.isDarkMode) "Beralih ke Mode Terang" else "Beralih ke Mode Gelap",
+                                tint = if (uiState.isDarkMode) Color(0xFFFFD54F) else MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
 
-                // Tab 3: Sumber & Info
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.SOURCES,
-                    onClick = { currentTab = AppNavTab.SOURCES },
-                    icon = {
-                        Icon(
-                            imageVector = if (currentTab == AppNavTab.SOURCES) Icons.Default.Language else Icons.Outlined.Language,
-                            contentDescription = "Sumber"
-                        )
-                    },
-                    label = { Text("Sumber") },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.White,
-                        selectedTextColor = Color.White,
-                        indicatorColor = NusantaraBlueActive,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray
-                    ),
-                    modifier = Modifier.testTag("tab_sources")
+                        if (uiState.isSearchBarVisible) {
+                            IconButton(
+                                onClick = {
+                                    viewModel.toggleSearchBar()
+                                    focusManager.clearFocus()
+                                },
+                                modifier = Modifier.testTag("close_search_button")
+                            ) {
+                                Icon(Icons.Default.Close, contentDescription = "Tutup", tint = MaterialTheme.colorScheme.onBackground)
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { viewModel.toggleSearchBar() },
+                                modifier = Modifier.testTag("open_search_button")
+                            ) {
+                                Icon(
+                                    Icons.Default.Search,
+                                    contentDescription = "Cari berita",
+                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.size(26.dp)
+                                )
+                            }
+                        }
+                    }
                 )
+            },
+            bottomBar = {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 6.dp
+                ) {
+                    // Tab 1: Berita
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.FEED,
+                        onClick = { currentTab = AppNavTab.FEED },
+                        icon = {
+                            Icon(
+                                imageVector = if (currentTab == AppNavTab.FEED) Icons.Default.Newspaper else Icons.Outlined.Newspaper,
+                                contentDescription = "Berita"
+                            )
+                        },
+                        label = { Text("Berita") },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            indicatorColor = NusantaraBlueActive,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        ),
+                        modifier = Modifier.testTag("tab_feed")
+                    )
+
+                    // Tab 2: Tersimpan
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.BOOKMARKS,
+                        onClick = { currentTab = AppNavTab.BOOKMARKS },
+                        icon = {
+                            BadgedBox(
+                                badge = {
+                                    if (bookmarkedArticles.isNotEmpty()) {
+                                        Badge(containerColor = NusantaraBlueActive) {
+                                            Text(bookmarkedArticles.size.toString(), color = Color.White)
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (currentTab == AppNavTab.BOOKMARKS) Icons.Default.Bookmark else Icons.Outlined.BookmarkBorder,
+                                    contentDescription = "Tersimpan"
+                                )
+                            }
+                        },
+                        label = { Text("Tersimpan") },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            indicatorColor = NusantaraBlueActive,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        ),
+                        modifier = Modifier.testTag("tab_bookmarks")
+                    )
+
+                    // Tab 3: Sumber & Info
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.SOURCES,
+                        onClick = { currentTab = AppNavTab.SOURCES },
+                        icon = {
+                            Icon(
+                                imageVector = if (currentTab == AppNavTab.SOURCES) Icons.Default.Language else Icons.Outlined.Language,
+                                contentDescription = "Sumber"
+                            )
+                        },
+                        label = { Text("Sumber") },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.White,
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            indicatorColor = NusantaraBlueActive,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        ),
+                        modifier = Modifier.testTag("tab_sources")
+                    )
+                }
             }
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(DarkNusantaraBackground)
-        ) {
-            when (currentTab) {
-                AppNavTab.FEED -> {
-                    FeedScreen(
-                        uiState = uiState,
-                        onCategorySelect = { viewModel.selectCategory(it) },
-                        onArticleClick = { article ->
-                            CustomTabsHelper.openNewsArticle(context, article.link, darkToolbarColor)
-                        },
-                        onBookmarkClick = { article ->
-                            viewModel.toggleBookmark(article)
-                        },
-                        onRefresh = { viewModel.loadNews(isRefresh = true) }
-                    )
-                }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                when (currentTab) {
+                    AppNavTab.FEED -> {
+                        FeedScreen(
+                            uiState = uiState,
+                            onCategorySelect = { viewModel.selectCategory(it) },
+                            onArticleClick = { article ->
+                                CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                            },
+                            onBookmarkClick = { article ->
+                                viewModel.toggleBookmark(article)
+                            },
+                            onRefresh = { viewModel.loadNews(isRefresh = true) }
+                        )
+                    }
 
-                AppNavTab.BOOKMARKS -> {
-                    BookmarksScreen(
-                        bookmarkedArticles = bookmarkedArticles,
-                        onArticleClick = { article ->
-                            CustomTabsHelper.openNewsArticle(context, article.link, darkToolbarColor)
-                        },
-                        onRemoveBookmark = { article ->
-                            viewModel.removeBookmark(article.link)
-                        },
-                        onShareClick = { article ->
-                            CustomTabsHelper.shareArticle(context, article.title, article.link)
-                        },
-                        onClearAll = {
-                            viewModel.clearAllBookmarks()
-                        }
-                    )
-                }
+                    AppNavTab.BOOKMARKS -> {
+                        BookmarksScreen(
+                            bookmarkedArticles = bookmarkedArticles,
+                            onArticleClick = { article ->
+                                CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                            },
+                            onRemoveBookmark = { article ->
+                                viewModel.removeBookmark(article.link)
+                            },
+                            onShareClick = { article ->
+                                CustomTabsHelper.shareArticle(context, article.title, article.link)
+                            },
+                            onClearAll = {
+                                viewModel.clearAllBookmarks()
+                            }
+                        )
+                    }
 
-                AppNavTab.SOURCES -> {
-                    SourcesScreen(
-                        onOpenPortalUrl = { url ->
-                            CustomTabsHelper.openNewsArticle(context, url, darkToolbarColor)
-                        }
-                    )
+                    AppNavTab.SOURCES -> {
+                        SourcesScreen(
+                            isDarkMode = uiState.isDarkMode,
+                            onToggleDarkMode = { viewModel.toggleDarkMode() },
+                            onOpenPortalUrl = { url ->
+                                CustomTabsHelper.openNewsArticle(context, url, dynamicToolbarColor)
+                            }
+                        )
+                    }
                 }
             }
         }

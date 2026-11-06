@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Berita Nusantara</string>
+    <string name="app_name">Berita Indonesia</string>
     <string name="nav_feed">Berita</string>
     <string name="nav_bookmarks">Tersimpan</string>
     <string name="nav_sources">Sumber &amp; Info</string>
@@ -17,4 +17,6 @@
     <string name="open_in_browser">Buka di Browser</string>
     <string name="cct_badge">Dibuka via Chrome Custom Tabs</string>
     <string name="refresh">Segarkan</string>
+    <string name="theme_dark">Mode Gelap</string>
+    <string name="theme_light">Mode Terang</string>
 </resources>

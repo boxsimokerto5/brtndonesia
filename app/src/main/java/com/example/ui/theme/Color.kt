@@ -2,7 +2,7 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Berita Nusantara - Dark Editorial Theme (matching mockup)
+// Berita Indonesia - Dark Editorial Theme
 val DarkNusantaraBackground = Color(0xFF111418)
 val DarkNusantaraSurface = Color(0xFF1E232B)
 val DarkNusantaraSurfaceVariant = Color(0xFF282F3A)
@@ -30,3 +30,8 @@ val AntaraColor = Color(0xFFE65100)
 val TempoColor = Color(0xFFD32F2F)
 val RepublikaColor = Color(0xFF1B5E20)
 val SuaraColor = Color(0xFF00897B)
+val KumparanColor = Color(0xFF0091EA)
+val SindonewsColor = Color(0xFFC2185B)
+val BisnisColor = Color(0xFF1565C0)
+val Liputan6Color = Color(0xFFEF6C00)
+val MerdekaColor = Color(0xFFD84315)

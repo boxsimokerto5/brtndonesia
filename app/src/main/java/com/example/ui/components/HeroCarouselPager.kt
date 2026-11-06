@@ -229,7 +229,7 @@ fun HeroCarouselPager(
                             .width(26.dp)
                             .height(4.dp)
                             .clip(RoundedCornerShape(2.dp))
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.primary)
                     )
                 } else {
                     Box(
@@ -237,7 +237,7 @@ fun HeroCarouselPager(
                             .padding(horizontal = 3.dp)
                             .size(5.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.35f))
+                            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.25f))
                     )
                 }
             }

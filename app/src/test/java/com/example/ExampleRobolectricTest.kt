@@ -22,7 +22,7 @@ class ExampleRobolectricTest {
     fun `read string from context`() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val appName = context.getString(R.string.app_name)
-        assertEquals("Berita Nusantara", appName)
+        assertEquals("Berita Indonesia", appName)
     }
 
     @Test
@@ -33,6 +33,10 @@ class ExampleRobolectricTest {
         assertTrue(sources.any { it.name == "Antara News" })
         assertTrue(sources.any { it.name == "CNBC Indonesia" })
         assertTrue(sources.any { it.name == "Tempo.co" })
+        assertTrue(sources.any { it.name == "Kumparan" })
+        assertTrue(sources.any { it.name == "Liputan6" })
+        assertTrue(sources.any { it.name == "Merdeka.com" })
+        assertTrue(sources.all { it.faviconUrl.isNotBlank() })
     }
 
     @Test

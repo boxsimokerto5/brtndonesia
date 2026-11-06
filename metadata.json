@@ -1,6 +1,6 @@
 {
-  "name": "Berita Nusantara",
-  "description": "Agregator berita Indonesia modern (Detik, Kompas, CNN, Antara, CNBC) dengan Chrome Custom Tabs, carousel headline, dan bookmark offline.",
+  "name": "Berita Indonesia",
+  "description": "Agregator berita Indonesia terlengkap (Detik, Kompas, CNN, Antara, CNBC) dengan Chrome Custom Tabs, toggle mode gelap/terang, dan bookmark offline.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

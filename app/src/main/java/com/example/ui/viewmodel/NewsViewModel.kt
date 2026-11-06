@@ -23,7 +23,8 @@ data class NewsUiState(
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val errorMessage: String? = null,
-    val userToastMessage: String? = null
+    val userToastMessage: String? = null,
+    val isDarkMode: Boolean = true
 )
 
 class NewsViewModel(
@@ -133,6 +134,23 @@ class NewsViewModel(
 
     fun consumeToast() {
         _uiState.value = _uiState.value.copy(userToastMessage = null)
+    }
+
+    fun toggleDarkMode() {
+        val nextMode = !_uiState.value.isDarkMode
+        _uiState.value = _uiState.value.copy(
+            isDarkMode = nextMode,
+            userToastMessage = if (nextMode) "Mode gelap aktif" else "Mode terang aktif"
+        )
+    }
+
+    fun setDarkMode(enabled: Boolean) {
+        if (_uiState.value.isDarkMode != enabled) {
+            _uiState.value = _uiState.value.copy(
+                isDarkMode = enabled,
+                userToastMessage = if (enabled) "Mode gelap aktif" else "Mode terang aktif"
+            )
+        }
     }
 
     private fun recomputeArticles() {

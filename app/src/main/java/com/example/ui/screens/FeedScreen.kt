@@ -27,10 +27,7 @@ import com.example.data.model.NewsArticle
 import com.example.data.model.NewsCategory
 import com.example.ui.components.HeroCarouselPager
 import com.example.ui.components.NewsCard
-import com.example.ui.theme.DarkNusantaraBackground
 import com.example.ui.theme.NusantaraBlueActive
-import com.example.ui.theme.TextPrimaryWhite
-import com.example.ui.theme.TextSecondaryMuted
 import com.example.ui.viewmodel.NewsUiState
 
 @Composable
@@ -45,7 +42,7 @@ fun FeedScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkNusantaraBackground)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("feed_screen")
     ) {
         // Active Filter Banner (if searching)
@@ -65,7 +62,7 @@ fun FeedScreen(
                     Text(
                         text = "Hasil pencarian: \"${uiState.searchQuery}\"",
                         style = MaterialTheme.typography.bodySmall,
-                        color = TextPrimaryWhite
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -81,9 +78,9 @@ fun FeedScreen(
                     CircularProgressIndicator(color = NusantaraBlueActive)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Memuat kabar terkini Nusantara...",
+                        text = "Memuat kabar terkini Indonesia...",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondaryMuted
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else if (uiState.articles.isEmpty()) {
@@ -98,20 +95,20 @@ fun FeedScreen(
                         imageVector = Icons.Default.SearchOff,
                         contentDescription = null,
                         modifier = Modifier.size(64.dp),
-                        tint = TextSecondaryMuted
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Tidak Ada Berita",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimaryWhite
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Coba gunakan kata kunci lain atau pilih kategori berbeda.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondaryMuted,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -174,7 +171,7 @@ fun FeedScreen(
                                             fontSize = 13.sp,
                                             letterSpacing = 0.5.sp
                                         ),
-                                        color = if (isSelected) Color.White else TextPrimaryWhite.copy(alpha = 0.85f)
+                                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f)
                                     )
                                 }
                             }
