@@ -67,7 +67,10 @@ class NewsRepository(
             async { dataSource.fetchFromRssUrl("https://www.jpnn.com/index.php?mib=rss", "JPNN", "BERITA UTAMA") },
 
             // KapanLagi.com (Selebriti, Musik, Film & Gaya Hidup)
-            async { dataSource.fetchFromRssUrl("https://www.kapanlagi.com/feed/", "KapanLagi.com", "HIBURAN") }
+            async { dataSource.fetchFromRssUrl("https://www.kapanlagi.com/feed/", "KapanLagi.com", "HIBURAN") },
+
+            // Okezone (MNC Media Network)
+            async { dataSource.fetchFromRssUrl("https://sindikasi.okezone.com/index.php/rss/0/RSS2.0", "Okezone", "BERITA UTAMA") }
         )
 
         val remoteList = mutableListOf<NewsArticle>()

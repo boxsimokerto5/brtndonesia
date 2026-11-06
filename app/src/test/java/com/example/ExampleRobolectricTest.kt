@@ -38,6 +38,8 @@ class ExampleRobolectricTest {
         assertTrue(sources.any { it.name == "Merdeka.com" })
         assertTrue(sources.any { it.name.contains("KapanLagi") })
         assertTrue(sources.any { it.name == "JPNN" })
+        assertTrue(sources.any { it.name.contains("iNews") })
+        assertTrue(sources.any { it.name.contains("Okezone") })
         assertTrue(sources.all { it.faviconUrl.isNotBlank() })
     }
 

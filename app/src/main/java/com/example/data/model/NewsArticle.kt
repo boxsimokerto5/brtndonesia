@@ -129,6 +129,28 @@ object SourceCatalog {
             rssUrl = "https://www.kapanlagi.com/feed/"
         ),
         NewsSource(
+            id = "inews",
+            name = "iNews.id",
+            shortName = "iNews",
+            domain = "inews.id",
+            brandColor = InewsColor,
+            logoText = "iN",
+            siteUrl = "https://www.inews.id",
+            description = "Portal berita nasional dan daerah MNC Media",
+            rssUrl = "https://www.inews.id"
+        ),
+        NewsSource(
+            id = "okezone",
+            name = "Okezone.com",
+            shortName = "Okezone",
+            domain = "okezone.com",
+            brandColor = OkezoneColor,
+            logoText = "OZ",
+            siteUrl = "https://www.okezone.com",
+            description = "Portal berita online terdepan MNC Media network",
+            rssUrl = "https://sindikasi.okezone.com/index.php/rss/0/RSS2.0"
+        ),
+        NewsSource(
             id = "kompas",
             name = "Kompas.com",
             shortName = "Kompas",
