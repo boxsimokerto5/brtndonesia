@@ -206,8 +206,20 @@ class NewsViewModel(
             }
         }
 
-        // Featured breaking items (items with non-empty image url)
-        val featured = articlesWithBookmarks.filter { !it.imageUrl.isNullOrBlank() }.take(5)
+        // Keywords for ranking top trending news (PPPK, Timnas, Sepakbola, IKN, Emas, etc.)
+        val trendingKeywords = listOf(
+            "trending", "viral", "pppk", "cpns", "timnas", "shin tae-yong", "sepakbola",
+            "ikn", "pilkada", "emas", "rupiah", "gempa", "bmkg", "ihsg", "liga",
+            "pertamina", "bbm", "ai", "apple", "iphone", "juara", "kpk", "bansos", "presiden"
+        )
+
+        // Select articles with images, sorted by trending keyword relevance
+        val articlesWithImages = articlesWithBookmarks.filter { !it.imageUrl.isNullOrBlank() }
+        val trendingRanked = articlesWithImages.sortedByDescending { article ->
+            val text = (article.title + " " + article.description).lowercase()
+            trendingKeywords.count { kw -> text.contains(kw) }
+        }
+        val featured = if (trendingRanked.isNotEmpty()) trendingRanked.take(5) else articlesWithImages.take(5)
 
         _uiState.value = currentState.copy(
             articles = finalArticles,
