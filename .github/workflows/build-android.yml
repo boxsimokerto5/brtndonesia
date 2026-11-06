@@ -1,0 +1,91 @@
+name: Build Android APK and AAB
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Sign APK & AAB
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradlew Executable
+        run: chmod +x ./gradlew
+
+      - name: Prepare Keystore (Consistent Signature)
+        run: |
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Memulihkan keystore dari GitHub Secrets (KEYSTORE_BASE64)..."
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-upload-key.jks
+          elif [ -f "my-upload-key.jks" ]; then
+            echo "Menggunakan my-upload-key.jks permanen yang ada di repositori..."
+          else
+            echo "Keystore tidak ditemukan, membuat keystore permanen..."
+            keytool -genkeypair -v -keystore my-upload-key.jks \
+              -alias upload -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "gecckocreator123" -keypass "gecckocreator123" \
+              -dname "CN=Berita Nusantara, OU=GecckoCreator, O=Berita Indonesia, L=Jakarta, ST=DKI Jakarta, C=ID"
+          fi
+          echo "Verifikasi keystore selesai."
+
+      - name: Build Release APK
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'gecckocreator123' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'gecckocreator123' }}
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+        run: ./gradlew :app:assembleRelease --stacktrace
+
+      - name: Build Release AAB (Android App Bundle)
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD || 'gecckocreator123' }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD || 'gecckocreator123' }}
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+        run: ./gradlew :app:bundleRelease --stacktrace
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Berita-Nusantara-Release-APK
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Upload Release AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Berita-Nusantara-Release-AAB
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Output Keystore SHA-256 Signature Summary
+        run: |
+          echo "### Ringkasan Tanda Tangan Digital Keystore (Fingerprint)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          keytool -list -v -keystore my-upload-key.jks -storepass "${{ secrets.STORE_PASSWORD || 'gecckocreator123' }}" | grep -E "(SHA1|SHA256|Owner|Valid from)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "Signature key ini permanen dan konsisten di setiap build berikutnya." >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Berita Nusantara</string>
+    <string name="nav_feed">Berita</string>
+    <string name="nav_bookmarks">Tersimpan</string>
+    <string name="nav_sources">Sumber &amp; Info</string>
+    <string name="search_hint">Cari berita terkini...</string>
+    <string name="breaking_news">Headline Utama</string>
+    <string name="latest_news">Kabar Terbaru</string>
+    <string name="share_article">Bagikan Artikel</string>
+    <string name="bookmark_added">Artikel disimpan ke favorit</string>
+    <string name="bookmark_removed">Artikel dihapus dari simpanan</string>
+    <string name="empty_bookmarks">Belum ada artikel tersimpan</string>
+    <string name="empty_bookmarks_desc">Tekan ikon bookmark pada artikel apa pun untuk membacanya nanti secara offline.</string>
+    <string name="empty_search">Tidak ditemukan berita</string>
+    <string name="empty_search_desc">Coba kata kunci lain atau pilih kategori berbeda.</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="open_in_browser">Buka di Browser</string>
+    <string name="cct_badge">Dibuka via Chrome Custom Tabs</string>
+    <string name="refresh">Segarkan</string>
+</resources>
