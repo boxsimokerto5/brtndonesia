@@ -206,6 +206,8 @@ class NewsViewModel(
             }
         }
 
+        val mixedArticles = interleaveBySource(finalArticles)
+
         // Keywords for ranking top trending news (PPPK, Timnas, Sepakbola, IKN, Emas, etc.)
         val trendingKeywords = listOf(
             "trending", "viral", "pppk", "cpns", "timnas", "shin tae-yong", "sepakbola",
@@ -219,12 +221,43 @@ class NewsViewModel(
             val text = (article.title + " " + article.description).lowercase()
             trendingKeywords.count { kw -> text.contains(kw) }
         }
-        val featured = if (trendingRanked.isNotEmpty()) trendingRanked.take(5) else articlesWithImages.take(5)
+
+        // Diversify Top 5 Trending across distinct publishers so multiple providers appear
+        val distinctBySource = trendingRanked.distinctBy { it.sourceName }.take(5)
+        val featured = if (distinctBySource.size >= 5) {
+            distinctBySource
+        } else {
+            val needed = 5 - distinctBySource.size
+            val remainder = trendingRanked.filter { r -> distinctBySource.none { it.link == r.link } }.take(needed)
+            distinctBySource + remainder
+        }
 
         _uiState.value = currentState.copy(
-            articles = finalArticles,
+            articles = mixedArticles,
             featuredArticles = featured
         )
+    }
+
+    private fun interleaveBySource(articles: List<NewsArticle>): List<NewsArticle> {
+        if (articles.isEmpty()) return emptyList()
+        val groups = articles.groupBy { it.sourceName }
+        if (groups.size <= 1) return articles
+
+        val iterators = groups.values.map { it.iterator() }.toMutableList()
+        val mixed = mutableListOf<NewsArticle>()
+
+        while (iterators.isNotEmpty()) {
+            val it = iterators.iterator()
+            while (it.hasNext()) {
+                val groupIter = it.next()
+                if (groupIter.hasNext()) {
+                    mixed.add(groupIter.next())
+                } else {
+                    it.remove()
+                }
+            }
+        }
+        return mixed
     }
 }
 

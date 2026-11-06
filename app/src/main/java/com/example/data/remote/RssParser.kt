@@ -62,15 +62,21 @@ object RssParser {
                                 tagName.equals("updated", ignoreCase = true) -> {
                                     currentArticleBuilder.pubDate = safeNextText(parser)
                                 }
+                                tagName.equals("guid", ignoreCase = true) -> {
+                                    val text = safeNextText(parser).trim()
+                                    if (currentArticleBuilder.link.isBlank() && text.startsWith("http")) {
+                                        currentArticleBuilder.link = text
+                                    }
+                                }
                                 tagName.equals("enclosure", ignoreCase = true) -> {
                                     val type = parser.getAttributeValue(null, "type") ?: ""
-                                    val url = parser.getAttributeValue(null, "url")
+                                    val url = parser.getAttributeValue(null, "url")?.replace("&amp;", "&")
                                     if (url != null && (type.startsWith("image") || url.contains(".jpg") || url.contains(".png") || url.contains(".webp") || url.contains(".jpeg"))) {
                                         currentArticleBuilder.imageUrl = url
                                     }
                                 }
                                 tagName.contains("content", ignoreCase = true) || tagName.contains("thumbnail", ignoreCase = true) -> {
-                                    val url = parser.getAttributeValue(null, "url")
+                                    val url = parser.getAttributeValue(null, "url")?.replace("&amp;", "&")
                                     if (!url.isNullOrBlank()) {
                                         currentArticleBuilder.imageUrl = url
                                     }

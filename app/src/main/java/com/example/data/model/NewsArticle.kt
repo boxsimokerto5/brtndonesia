@@ -49,18 +49,7 @@ object SourceCatalog {
             logoText = "d",
             siteUrl = "https://www.detik.com",
             description = "Portal berita terdepan & terpopuler di Indonesia",
-            rssUrl = "https://api-berita-indonesia.vercel.app/detik/terbaru/"
-        ),
-        NewsSource(
-            id = "kompas",
-            name = "Kompas.com",
-            shortName = "Kompas",
-            domain = "kompas.com",
-            brandColor = KompasColor,
-            logoText = "K",
-            siteUrl = "https://www.kompas.com",
-            description = "Akurat, jernih, dan tepercaya untuk nusantara",
-            rssUrl = "https://api-berita-indonesia.vercel.app/antara/terbaru/"
+            rssUrl = "https://news.detik.com/rss"
         ),
         NewsSource(
             id = "cnn",
@@ -96,15 +85,15 @@ object SourceCatalog {
             rssUrl = "https://www.antaranews.com/rss/terkini.xml"
         ),
         NewsSource(
-            id = "tempo",
-            name = "Tempo.co",
-            shortName = "Tempo",
-            domain = "tempo.co",
-            brandColor = TempoColor,
-            logoText = "T",
-            siteUrl = "https://www.tempo.co",
-            description = "Jurnalisme independen dan investigatif",
-            rssUrl = "https://rss.tempo.co/nasional"
+            id = "sindonews",
+            name = "Sindonews",
+            shortName = "Sindo",
+            domain = "sindonews.com",
+            brandColor = SindonewsColor,
+            logoText = "SN",
+            siteUrl = "https://www.sindonews.com",
+            description = "Informasi tepercaya seputar daerah, nasional, dan global",
+            rssUrl = "https://nasional.sindonews.com/rss"
         ),
         NewsSource(
             id = "republika",
@@ -115,7 +104,51 @@ object SourceCatalog {
             logoText = "R",
             siteUrl = "https://www.republika.co.id",
             description = "Berita nasional, khazanah Islam, dan ekonomi syariah",
-            rssUrl = "https://republika.co.id/rss"
+            rssUrl = "https://www.republika.co.id/rss/nasional"
+        ),
+        NewsSource(
+            id = "jpnn",
+            name = "JPNN",
+            shortName = "JPNN",
+            domain = "jpnn.com",
+            brandColor = JpnnColor,
+            logoText = "JP",
+            siteUrl = "https://www.jpnn.com",
+            description = "Jaringan Berita Nasional Jawa Pos Group terluas di Indonesia",
+            rssUrl = "https://www.jpnn.com/index.php?mib=rss"
+        ),
+        NewsSource(
+            id = "kapanlagi",
+            name = "KapanLagi.com",
+            shortName = "KapanLagi",
+            domain = "kapanlagi.com",
+            brandColor = KapanlagiColor,
+            logoText = "KL",
+            siteUrl = "https://www.kapanlagi.com",
+            description = "Portal berita hiburan, selebriti, dan musik nomor satu di Indonesia",
+            rssUrl = "https://www.kapanlagi.com/feed/"
+        ),
+        NewsSource(
+            id = "kompas",
+            name = "Kompas.com",
+            shortName = "Kompas",
+            domain = "kompas.com",
+            brandColor = KompasColor,
+            logoText = "K",
+            siteUrl = "https://www.kompas.com",
+            description = "Akurat, jernih, dan tepercaya untuk nusantara",
+            rssUrl = "https://www.kompas.com"
+        ),
+        NewsSource(
+            id = "tempo",
+            name = "Tempo.co",
+            shortName = "Tempo",
+            domain = "tempo.co",
+            brandColor = TempoColor,
+            logoText = "T",
+            siteUrl = "https://www.tempo.co",
+            description = "Jurnalisme independen dan investigatif",
+            rssUrl = "https://www.tempo.co"
         ),
         NewsSource(
             id = "jawapos",
@@ -126,7 +159,7 @@ object SourceCatalog {
             logoText = "JP",
             siteUrl = "https://www.jawapos.com",
             description = "Selalu ada yang baru dari peristiwa terhangat",
-            rssUrl = "https://api-berita-indonesia.vercel.app/antara/terbaru/"
+            rssUrl = "https://www.jawapos.com"
         ),
         NewsSource(
             id = "suara",
@@ -137,7 +170,7 @@ object SourceCatalog {
             logoText = "S",
             siteUrl = "https://www.suara.com",
             description = "Kabar peristiwa terkini, gaya hidup, dan viral",
-            rssUrl = "https://www.suara.com/rss"
+            rssUrl = "https://www.suara.com"
         ),
         NewsSource(
             id = "kumparan",
@@ -148,18 +181,7 @@ object SourceCatalog {
             logoText = "k",
             siteUrl = "https://www.kumparan.com",
             description = "Platform media kolaboratif terdepan di Indonesia",
-            rssUrl = "https://api-berita-indonesia.vercel.app/kumparan/terbaru/"
-        ),
-        NewsSource(
-            id = "sindonews",
-            name = "Sindonews",
-            shortName = "Sindo",
-            domain = "sindonews.com",
-            brandColor = SindonewsColor,
-            logoText = "SN",
-            siteUrl = "https://www.sindonews.com",
-            description = "Informasi tepercaya seputar daerah, nasional, dan global",
-            rssUrl = "https://api-berita-indonesia.vercel.app/antara/terbaru/"
+            rssUrl = "https://www.kumparan.com"
         ),
         NewsSource(
             id = "bisnis",
@@ -170,7 +192,7 @@ object SourceCatalog {
             logoText = "B",
             siteUrl = "https://www.bisnis.com",
             description = "Rujukan utama berita ekonomi, perbankan, dan emiten",
-            rssUrl = "https://api-berita-indonesia.vercel.app/antara/terbaru/"
+            rssUrl = "https://www.bisnis.com"
         ),
         NewsSource(
             id = "liputan6",
@@ -181,7 +203,7 @@ object SourceCatalog {
             logoText = "6",
             siteUrl = "https://www.liputan6.com",
             description = "Aktual, tajam, dan tepercaya dari seluruh pelosok negeri",
-            rssUrl = "https://api-berita-indonesia.vercel.app/antara/terbaru/"
+            rssUrl = "https://www.liputan6.com"
         ),
         NewsSource(
             id = "merdeka",
@@ -192,7 +214,7 @@ object SourceCatalog {
             logoText = "M",
             siteUrl = "https://www.merdeka.com",
             description = "Berita terkini politik, peristiwa, dan inspirasi nusantara",
-            rssUrl = "https://api-berita-indonesia.vercel.app/merdeka/terbaru/"
+            rssUrl = "https://www.merdeka.com"
         )
     )
 

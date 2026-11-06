@@ -106,6 +106,8 @@ object TopicCatalog {
         TopicItem("Startup", "📱 Teknologi", "🚀", isHot = false, searchKeyword = "Startup"),
 
         // 🎭 Hiburan & Gaya Hidup
+        TopicItem("Selebriti", "🎭 Hiburan", "⭐", isHot = true, searchKeyword = "Selebriti"),
+        TopicItem("Artis & Musik", "🎭 Hiburan", "🎶", isHot = false, searchKeyword = "Artis"),
         TopicItem("Film Indonesia", "🎭 Hiburan", "🎬", isHot = true, searchKeyword = "Film"),
         TopicItem("Bioskop XXI", "🎭 Hiburan", "🍿", isHot = false, searchKeyword = "Bioskop"),
         TopicItem("K-Pop & Drakor", "🎭 Hiburan", "🎵", isHot = true, searchKeyword = "K-Pop"),
