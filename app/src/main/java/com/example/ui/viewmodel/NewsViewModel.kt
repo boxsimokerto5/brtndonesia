@@ -24,14 +24,20 @@ data class NewsUiState(
     val isRefreshing: Boolean = false,
     val errorMessage: String? = null,
     val userToastMessage: String? = null,
-    val isDarkMode: Boolean = true
+    val isDarkMode: Boolean = false // Standar awal saat membuka pertama kali adalah tampilan terang
 )
 
 class NewsViewModel(
-    private val repository: NewsRepository
+    private val repository: NewsRepository,
+    private val themePreferences: com.example.util.ThemePreferences? = null
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(NewsUiState(isLoading = true))
+    private val _uiState = MutableStateFlow(
+        NewsUiState(
+            isLoading = true,
+            isDarkMode = themePreferences?.isDarkMode() ?: false
+        )
+    )
     val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
 
     private var rawArticles: List<NewsArticle> = emptyList()
@@ -149,6 +155,7 @@ class NewsViewModel(
 
     fun toggleDarkMode() {
         val nextMode = !_uiState.value.isDarkMode
+        themePreferences?.setDarkMode(nextMode)
         _uiState.value = _uiState.value.copy(
             isDarkMode = nextMode,
             userToastMessage = if (nextMode) "Mode gelap aktif" else "Mode terang aktif"
@@ -157,6 +164,7 @@ class NewsViewModel(
 
     fun setDarkMode(enabled: Boolean) {
         if (_uiState.value.isDarkMode != enabled) {
+            themePreferences?.setDarkMode(enabled)
             _uiState.value = _uiState.value.copy(
                 isDarkMode = enabled,
                 userToastMessage = if (enabled) "Mode gelap aktif" else "Mode terang aktif"
@@ -261,11 +269,14 @@ class NewsViewModel(
     }
 }
 
-class NewsViewModelFactory(private val repository: NewsRepository) : ViewModelProvider.Factory {
+class NewsViewModelFactory(
+    private val repository: NewsRepository,
+    private val themePreferences: com.example.util.ThemePreferences? = null
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NewsViewModel(repository) as T
+            return NewsViewModel(repository, themePreferences) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

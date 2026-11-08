@@ -152,5 +152,21 @@ class ExampleRobolectricTest {
         assertTrue(com.example.ad.AdConfig.PLACEMENT_INTERSTITIAL.isNotBlank())
         assertTrue(com.example.ad.AdConfig.PLACEMENT_NATIVE.isNotBlank())
     }
+
+    @Test
+    fun `test theme defaults to light mode on first launch`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val themePrefs = com.example.util.ThemePreferences(context)
+        // Standar awal adalah Mode Terang (isDarkMode == false)
+        org.junit.Assert.assertFalse(themePrefs.isDarkMode())
+
+        // Jika diaktifkan ke mode gelap
+        themePrefs.setDarkMode(true)
+        org.junit.Assert.assertTrue(themePrefs.isDarkMode())
+
+        // Kembalikan ke mode terang
+        themePrefs.setDarkMode(false)
+        org.junit.Assert.assertFalse(themePrefs.isDarkMode())
+    }
 }
 

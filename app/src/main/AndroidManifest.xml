@@ -15,6 +15,8 @@
         <intent>
             <action android:name="android.support.customtabs.action.CustomTabsService" />
         </intent>
+        <package android:name="com.xiaomi.market" />
+        <provider android:authorities="com.xiaomi.market.provider.DirectMailProvider" />
     </queries>
 
     <application

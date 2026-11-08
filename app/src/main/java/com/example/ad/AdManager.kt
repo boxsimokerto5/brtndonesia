@@ -51,14 +51,9 @@ object AdManager {
         adPreferences = AdPreferences.getInstance(appContext)
 
         try {
-            // Aktifkan log jaringan TopOn untuk verifikasi pemuatan iklan
-            ATSDK.setNetworkLogDebug(true)
+            // Nonaktifkan log debug berlebih untuk mencegah peringatan diagnostik ADX internal TopOn
+            ATSDK.setNetworkLogDebug(false)
             ATSDK.setPersonalizedAdStatus(ATSDK.PERSONALIZED)
-
-            // Daftarkan Device Risk Listener untuk mencegah "notifyDeviceRisk:null"
-            ATSDK.registerDeviceRiskListener { _ ->
-                Log.d(TAG, "Device risk listener active")
-            }
 
             // Batasi jaringan mediasi hanya untuk Meta Audience Network (Facebook, Firm ID: 1)
             val nonFacebookFirmIds = listOf(
@@ -83,8 +78,8 @@ object AdManager {
 
             // Pra-muat (preload) iklan Native
             initNative(appContext)
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to initialize TopOn SDK: ${e.message}", e)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Failed to initialize TopOn SDK safely: ${t.message}", t)
         }
     }
 
@@ -124,8 +119,8 @@ object AdManager {
                 pendingActionAfterInterstitial = onAction
                 try {
                     ad.show(activity)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error showing interstitial: ${e.message}", e)
+                } catch (t: Throwable) {
+                    Log.e(TAG, "Error showing interstitial: ${t.message}", t)
                     // Jika terjadi error saat memanggil show, pastikan aksi pengguna tetap dieksekusi
                     executePendingAction()
                     loadInterstitial(activity)

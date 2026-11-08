@@ -38,7 +38,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MyApplicationTheme(
-    darkTheme: Boolean = true, // Force dark theme to match user's screenshot layout
+    darkTheme: Boolean = false, // Default ke mode terang (Light Theme)
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
