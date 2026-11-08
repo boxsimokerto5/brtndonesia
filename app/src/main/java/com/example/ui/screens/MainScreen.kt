@@ -15,6 +15,12 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Newspaper
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Newspaper
 import androidx.compose.material.icons.filled.Tag
@@ -33,7 +39,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.ui.components.AboutAppDialog
 import com.example.ui.components.OfficialWebsitesDrawerContent
+import com.example.ui.components.PrivacyPolicyDialog
+import com.example.ui.components.TermsOfServiceDialog
 import com.example.ui.theme.NusantaraBlueActive
 import com.example.ui.viewmodel.NewsViewModel
 import com.example.util.CustomTabsHelper
@@ -62,6 +71,10 @@ fun MainScreen(
     val bookmarkedArticles by viewModel.bookmarkedArticles.collectAsStateWithLifecycle()
 
     var currentTab by remember { mutableStateOf(AppNavTab.FEED) }
+    var showPrivacyPolicyDialog by remember { mutableStateOf(false) }
+    var showTermsOfServiceDialog by remember { mutableStateOf(false) }
+    var showAboutAppDialog by remember { mutableStateOf(false) }
+    var showOptionsMenu by remember { mutableStateOf(false) }
     val dynamicToolbarColor = MaterialTheme.colorScheme.surface.toArgb()
 
     // Handle user toast feedback
@@ -87,6 +100,26 @@ fun MainScreen(
                         CustomTabsHelper.openNewsArticle(context, portal.siteUrl, dynamicToolbarColor)
                     }
                     coroutineScope.launch { drawerState.close() }
+                },
+                onOpenPrivacyPolicy = {
+                    coroutineScope.launch { drawerState.close() }
+                    showPrivacyPolicyDialog = true
+                },
+                onOpenTermsOfService = {
+                    coroutineScope.launch { drawerState.close() }
+                    showTermsOfServiceDialog = true
+                },
+                onOpenAbout = {
+                    coroutineScope.launch { drawerState.close() }
+                    showAboutAppDialog = true
+                },
+                onShareApp = {
+                    coroutineScope.launch { drawerState.close() }
+                    CustomTabsHelper.shareApp(context)
+                },
+                onRateApp = {
+                    coroutineScope.launch { drawerState.close() }
+                    CustomTabsHelper.rateApp(context)
                 },
                 onCloseDrawer = {
                     coroutineScope.launch { drawerState.close() }
@@ -192,6 +225,72 @@ fun MainScreen(
                                     contentDescription = "Cari berita",
                                     tint = MaterialTheme.colorScheme.onBackground,
                                     modifier = Modifier.size(26.dp)
+                                )
+                            }
+                        }
+
+                        // Overflow Options Menu
+                        Box {
+                            IconButton(
+                                onClick = { showOptionsMenu = !showOptionsMenu },
+                                modifier = Modifier.testTag("overflow_menu_button")
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "Pilihan Lainnya",
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+
+                            DropdownMenu(
+                                expanded = showOptionsMenu,
+                                onDismissRequest = { showOptionsMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Tentang Aplikasi") },
+                                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = null, tint = NusantaraBlueActive) },
+                                    onClick = {
+                                        showOptionsMenu = false
+                                        showAboutAppDialog = true
+                                    },
+                                    modifier = Modifier.testTag("menu_about")
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Bagikan Aplikasi") },
+                                    leadingIcon = { Icon(Icons.Default.Share, contentDescription = null, tint = NusantaraBlueActive) },
+                                    onClick = {
+                                        showOptionsMenu = false
+                                        CustomTabsHelper.shareApp(context)
+                                    },
+                                    modifier = Modifier.testTag("menu_share")
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Nilai di Play Store") },
+                                    leadingIcon = { Icon(Icons.Default.Star, contentDescription = null, tint = Color(0xFFFFB300)) },
+                                    onClick = {
+                                        showOptionsMenu = false
+                                        CustomTabsHelper.rateApp(context)
+                                    },
+                                    modifier = Modifier.testTag("menu_rate")
+                                )
+                                HorizontalDivider()
+                                DropdownMenuItem(
+                                    text = { Text("Kebijakan Privasi") },
+                                    leadingIcon = { Icon(Icons.Default.Security, contentDescription = null, tint = Color(0xFF2E7D32)) },
+                                    onClick = {
+                                        showOptionsMenu = false
+                                        showPrivacyPolicyDialog = true
+                                    },
+                                    modifier = Modifier.testTag("menu_privacy")
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Syarat & Ketentuan") },
+                                    leadingIcon = { Icon(Icons.Default.Description, contentDescription = null, tint = Color(0xFFC62828)) },
+                                    onClick = {
+                                        showOptionsMenu = false
+                                        showTermsOfServiceDialog = true
+                                    },
+                                    modifier = Modifier.testTag("menu_terms")
                                 )
                             }
                         }
@@ -350,5 +449,30 @@ fun MainScreen(
                 }
             }
         }
+    }
+
+    // Modal Dialogs for Legal and App Info
+    if (showPrivacyPolicyDialog) {
+        PrivacyPolicyDialog(
+            onDismiss = { showPrivacyPolicyDialog = false }
+        )
+    }
+
+    if (showTermsOfServiceDialog) {
+        TermsOfServiceDialog(
+            onDismiss = { showTermsOfServiceDialog = false }
+        )
+    }
+
+    if (showAboutAppDialog) {
+        AboutAppDialog(
+            onDismiss = { showAboutAppDialog = false },
+            onShareApp = {
+                CustomTabsHelper.shareApp(context)
+            },
+            onRateApp = {
+                CustomTabsHelper.rateApp(context)
+            }
+        )
     }
 }

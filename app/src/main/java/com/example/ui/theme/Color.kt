@@ -39,3 +39,6 @@ val JpnnColor = Color(0xFF0D47A1)
 val KapanlagiColor = Color(0xFF0072CE)
 val InewsColor = Color(0xFFED1C24)
 val OkezoneColor = Color(0xFFF25C05)
+
+// National Red
+val IndonesianRed = Color(0xFFD32F2F)

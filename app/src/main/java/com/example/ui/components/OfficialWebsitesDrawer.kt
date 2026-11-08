@@ -28,9 +28,20 @@ import com.example.data.model.NewsSource
 import com.example.data.model.SourceCatalog
 import com.example.ui.theme.NusantaraBlueActive
 
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
+
 @Composable
 fun OfficialWebsitesDrawerContent(
     onSelectPortal: (NewsSource) -> Unit,
+    onOpenPrivacyPolicy: () -> Unit,
+    onOpenTermsOfService: () -> Unit,
+    onOpenAbout: () -> Unit,
+    onShareApp: () -> Unit,
+    onRateApp: () -> Unit,
     onCloseDrawer: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -76,7 +87,7 @@ fun OfficialWebsitesDrawerContent(
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = "Web Resmi Berita",
+                                text = "Berita Indonesia",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Black,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -98,7 +109,7 @@ fun OfficialWebsitesDrawerContent(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Akses langsung portal media nasional terkemuka melalui Chrome Custom Tabs resmi.",
+                        text = "Portal berita nasional terpercaya & terlengkap dalam genggaman Anda.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 16.sp
@@ -111,13 +122,23 @@ fun OfficialWebsitesDrawerContent(
                 thickness = 1.dp
             )
 
-            // List of Official Websites
+            // Scrollable List: Portals + Actions & Info
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
+                item {
+                    Text(
+                        text = "PORTAL BERITA TERHUBUNG",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 6.dp)
+                    )
+                }
+
                 items(
                     items = SourceCatalog.sources,
                     key = { it.id }
@@ -125,6 +146,80 @@ fun OfficialWebsitesDrawerContent(
                     DrawerPortalItem(
                         source = portal,
                         onClick = { onSelectPortal(portal) }
+                    )
+                }
+
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                    Text(
+                        text = "BANTUAN & INFORMASI",
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp)
+                    )
+                }
+
+                // Bagikan Aplikasi
+                item {
+                    DrawerActionItem(
+                        icon = Icons.Default.Share,
+                        iconTint = NusantaraBlueActive,
+                        title = "Bagikan Aplikasi",
+                        subtitle = "Kirim ke teman atau keluarga",
+                        testTag = "drawer_action_share",
+                        onClick = onShareApp
+                    )
+                }
+
+                // Beri Nilai di Play Store
+                item {
+                    DrawerActionItem(
+                        icon = Icons.Default.Star,
+                        iconTint = Color(0xFFFFB300),
+                        title = "Nilai di Play Store",
+                        subtitle = "Beri kami ulasan bintang 5",
+                        testTag = "drawer_action_rate",
+                        onClick = onRateApp
+                    )
+                }
+
+                // Tentang Aplikasi
+                item {
+                    DrawerActionItem(
+                        icon = Icons.Default.Info,
+                        iconTint = MaterialTheme.colorScheme.primary,
+                        title = "Tentang Aplikasi",
+                        subtitle = "Versi 1.0.0 & Informasi pengembang",
+                        testTag = "drawer_action_about",
+                        onClick = onOpenAbout
+                    )
+                }
+
+                // Kebijakan Privasi
+                item {
+                    DrawerActionItem(
+                        icon = Icons.Default.Security,
+                        iconTint = Color(0xFF2E7D32),
+                        title = "Kebijakan Privasi",
+                        subtitle = "Transparansi data & perlindungan privasi",
+                        testTag = "drawer_action_privacy",
+                        onClick = onOpenPrivacyPolicy
+                    )
+                }
+
+                // Syarat & Ketentuan Layanan
+                item {
+                    DrawerActionItem(
+                        icon = Icons.Default.Description,
+                        iconTint = Color(0xFFC62828),
+                        title = "Syarat & Ketentuan",
+                        subtitle = "Ketentuan layanan & hak cipta penerbit",
+                        testTag = "drawer_action_terms",
+                        onClick = onOpenTermsOfService
                     )
                 }
             }
@@ -149,9 +244,66 @@ fun OfficialWebsitesDrawerContent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Dibuka mulus via Chrome Custom Tabs",
+                    text = "Ditenagai Chrome Custom Tabs Resmi",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DrawerActionItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconTint: Color,
+    title: String,
+    subtitle: String,
+    testTag: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .testTag(testTag),
+        color = Color.Transparent
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = iconTint.copy(alpha = 0.12f),
+                modifier = Modifier.size(36.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTint,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 11.sp
                 )
             }
         }

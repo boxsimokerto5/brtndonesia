@@ -96,10 +96,46 @@ object CustomTabsHelper {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, title)
-            putExtra(Intent.EXTRA_TEXT, "$title\n\nBaca selengkapnya di: $url\n\n(Ditemukan via NusaFeed)")
+            putExtra(Intent.EXTRA_TEXT, "$title\n\nBaca selengkapnya di: $url\n\n(Ditemukan via Berita Indonesia)")
         }
         val chooser = Intent.createChooser(shareIntent, "Bagikan Artikel Berita")
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(chooser)
+    }
+
+    /**
+     * Share the Berita Indonesia application with others
+     */
+    fun shareApp(context: Context) {
+        val appId = "com.beritaindonesia.gecckocreator"
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, "Aplikasi Berita Indonesia")
+            putExtra(
+                Intent.EXTRA_TEXT,
+                "Dapatkan berita Indonesia terkini, terpercaya, dan tercepat (Detik, Kompas, CNN, Antara, CNBC, dan lainnya) dalam satu aplikasi Berita Indonesia!\n\nUnduh gratis di Google Play Store:\nhttps://play.google.com/store/apps/details?id=$appId"
+            )
+        }
+        val chooser = Intent.createChooser(shareIntent, "Bagikan Aplikasi Berita Indonesia")
+        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(chooser)
+    }
+
+    /**
+     * Open Google Play Store listing to rate the application
+     */
+    fun rateApp(context: Context) {
+        val appId = "com.beritaindonesia.gecckocreator"
+        try {
+            val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appId")).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            }
+            context.startActivity(marketIntent)
+        } catch (e: Exception) {
+            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appId")).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(webIntent)
+        }
     }
 }
