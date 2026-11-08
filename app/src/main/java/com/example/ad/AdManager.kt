@@ -68,16 +68,35 @@ object AdManager {
             ATSDK.setAllowedShowNetworkFirmIdList(AdConfig.PLACEMENT_INTERSTITIAL, listOf("1"))
             ATSDK.setAllowedShowNetworkFirmIdList(AdConfig.PLACEMENT_NATIVE, listOf("1"))
 
+            // Inisialisasi Meta Audience Network terlebih dahulu
+            try {
+                com.facebook.ads.AudienceNetworkAds.buildInitSettings(appContext)
+                    .withInitListener { result ->
+                        Log.d(TAG, "Meta Audience Network init: ${result.message}")
+                    }
+                    .initialize()
+            } catch (t: Throwable) {
+                Log.w(TAG, "Meta Audience Network direct init skipped: ${t.message}")
+            }
+
             // Inisialisasi TopOn SDK dengan App ID dan App Key
             ATSDK.init(appContext, AdConfig.TOPON_APP_ID, AdConfig.TOPON_APP_KEY)
             isInitialized = true
             Log.d(TAG, "TopOn SDK initialized successfully. Initial click count: ${adPreferences?.getClickCount()}")
 
-            // Pra-muat (preload) iklan Interstitial
-            initInterstitial(appContext)
+            // Pra-muat (preload) iklan Interstitial secara aman
+            try {
+                initInterstitial(appContext)
+            } catch (t: Throwable) {
+                Log.e(TAG, "Failed to preload Interstitial: ${t.message}", t)
+            }
 
-            // Pra-muat (preload) iklan Native
-            initNative(appContext)
+            // Pra-muat (preload) iklan Native secara aman
+            try {
+                initNative(appContext)
+            } catch (t: Throwable) {
+                Log.e(TAG, "Failed to preload Native: ${t.message}", t)
+            }
         } catch (t: Throwable) {
             Log.e(TAG, "Failed to initialize TopOn SDK safely: ${t.message}", t)
         }

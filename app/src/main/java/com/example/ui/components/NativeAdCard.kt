@@ -81,24 +81,24 @@ private fun TopOnNativeAdViewContainer(
     nativeAd: NativeAd,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
-    AndroidView(
-        factory = { ctx ->
-            val atNativeAdView = ATNativeAdView(ctx)
-            val adLayout = buildNativeAdLayout(ctx, nativeAd, atNativeAdView)
-            atNativeAdView.addView(adLayout)
-            atNativeAdView
-        },
-        update = { atNativeAdView ->
-            atNativeAdView.removeAllViews()
-            val adLayout = buildNativeAdLayout(context, nativeAd, atNativeAdView)
-            atNativeAdView.addView(adLayout)
-        },
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-    )
+    key(nativeAd) {
+        AndroidView(
+            factory = { ctx ->
+                val atNativeAdView = ATNativeAdView(ctx)
+                try {
+                    val adLayout = buildNativeAdLayout(ctx, nativeAd, atNativeAdView)
+                    atNativeAdView.addView(adLayout)
+                } catch (t: Throwable) {
+                    android.util.Log.e("NativeAdCard", "Failed to construct native ad view: ${t.message}", t)
+                }
+                atNativeAdView
+            },
+            update = { /* Jangan rekonstruksi view saat recomposition agar tidak terjadi parent view collision */ },
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        )
+    }
 }
 
 /**
@@ -155,13 +155,16 @@ private fun buildNativeAdLayout(
     val mediaView = material?.getAdMediaView()
     val mainImageView = ImageView(context)
     if (mediaView != null) {
+        (mediaView.parent as? android.view.ViewGroup)?.removeView(mediaView)
         val mediaParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             dpToPx(context, 160)
         ).apply {
             bottomMargin = dpToPx(context, 10)
         }
-        layout.addView(mediaView, mediaParams)
+        try {
+            layout.addView(mediaView, mediaParams)
+        } catch (_: Throwable) {}
     } else if (!material?.mainImageUrl.isNullOrBlank()) {
         mainImageView.apply {
             scaleType = ImageView.ScaleType.CENTER_CROP
