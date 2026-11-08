@@ -7,8 +7,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.ui.components.NativeAdCard
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SearchOff
@@ -178,17 +180,29 @@ fun FeedScreen(
                         }
                     }
 
-                    // Feed Items (Split Cards)
-                    items(
+                    // Feed Items (Split Cards) with Native Ads embedded every 5 articles
+                    itemsIndexed(
                         items = uiState.articles,
-                        key = { it.link.ifBlank { it.title } }
-                    ) { article ->
-                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                            NewsCard(
-                                article = article,
-                                onArticleClick = onArticleClick,
-                                onBookmarkClick = onBookmarkClick
-                            )
+                        key = { index, article -> "${index}_${article.link.ifBlank { article.title }}" }
+                    ) { index, article ->
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                NewsCard(
+                                    article = article,
+                                    onArticleClick = onArticleClick,
+                                    onBookmarkClick = onBookmarkClick
+                                )
+                            }
+
+                            // Tampilkan Native Ad setiap 5 artikel
+                            if ((index + 1) % 5 == 0 && index < uiState.articles.size - 1) {
+                                Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                    NativeAdCard()
+                                }
+                            }
                         }
                     }
                 }

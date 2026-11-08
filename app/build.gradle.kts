@@ -134,6 +134,15 @@ dependencies {
   implementation(libs.okhttp)
   // implementation(libs.play.services.location)
   implementation(libs.retrofit)
+
+  // TopOn (AnyThink) SDK - Interstitial & Native Ads
+  implementation("com.anythink.sdk:core-tpn:6.5.40")
+  implementation("com.anythink.sdk:interstitial-tpn:6.5.40")
+  implementation("com.anythink.sdk:nativead-tpn:6.5.40")
+
+  // TopOn Meta Adapter & Meta Audience Network SDK
+  implementation("com.anythink.sdk:adapter-tpn-facebook:6.5.40")
+  implementation("com.facebook.android:audience-network-sdk:6.20.0")
   testImplementation(libs.androidx.compose.ui.test.junit4)
   testImplementation(libs.androidx.core)
   testImplementation(libs.androidx.junit)

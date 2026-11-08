@@ -23,6 +23,9 @@ class MainActivity : ComponentActivity() {
         val repository = NewsRepository(database.bookmarkDao())
         val viewModelFactory = NewsViewModelFactory(repository)
 
+        // Initialize TopOn Ad Mediation & Meta Audience Network
+        com.example.ad.AdManager.init(this)
+
         setContent {
             val viewModel: NewsViewModel = viewModel(factory = viewModelFactory)
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()

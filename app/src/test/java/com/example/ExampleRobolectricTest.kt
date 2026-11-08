@@ -115,4 +115,42 @@ class ExampleRobolectricTest {
 
         assertEquals(3, mixed.take(3).map { it.sourceName }.distinct().size)
     }
+
+    @Test
+    fun `test persistent click counter remembers clicks across app restarts`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val adPrefs = com.example.ad.AdPreferences(context)
+        adPrefs.resetClickCount()
+        assertEquals(0, adPrefs.getClickCount())
+
+        // Simulate user clicking 7 articles, then closing the app
+        repeat(7) {
+            adPrefs.incrementClickCount()
+        }
+        assertEquals(7, adPrefs.getClickCount())
+
+        // Simulate app kill & reopen: new instance reading from SharedPreferences
+        val reopenedPrefs = com.example.ad.AdPreferences(context)
+        assertEquals(7, reopenedPrefs.getClickCount())
+
+        // Continue clicks from 8 through 15
+        var current = reopenedPrefs.getClickCount()
+        repeat(8) {
+            current = reopenedPrefs.incrementClickCount()
+        }
+        assertEquals(15, current)
+        assertEquals(15, reopenedPrefs.getClickCount())
+
+        // Reset after interstitial trigger
+        reopenedPrefs.resetClickCount()
+        assertEquals(0, reopenedPrefs.getClickCount())
+    }
+
+    @Test
+    fun `test ad configuration matches 15 click constraint and only interstitial and native`() {
+        assertEquals(15, com.example.ad.AdConfig.INTERSTITIAL_CLICK_TARGET)
+        assertTrue(com.example.ad.AdConfig.PLACEMENT_INTERSTITIAL.isNotBlank())
+        assertTrue(com.example.ad.AdConfig.PLACEMENT_NATIVE.isNotBlank())
+    }
 }
+

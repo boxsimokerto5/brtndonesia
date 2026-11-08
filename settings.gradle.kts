@@ -19,9 +19,10 @@ dependencyResolutionManagement {
   repositories {
     google()
     mavenCentral()
+    maven { url = uri("https://jfrog.anythinktech.com/artifactory/overseas_sdk") }
   }
 }
 
-rootProject.name = "My Application"
+rootProject.name = "Berita Indonesia"
 
 include(":app")

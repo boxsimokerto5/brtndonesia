@@ -37,6 +37,8 @@ import com.example.ui.components.OfficialWebsitesDrawerContent
 import com.example.ui.theme.NusantaraBlueActive
 import com.example.ui.viewmodel.NewsViewModel
 import com.example.util.CustomTabsHelper
+import com.example.util.findActivity
+import com.example.ad.AdManager
 import kotlinx.coroutines.launch
 
 enum class AppNavTab(val title: String) {
@@ -76,7 +78,14 @@ fun MainScreen(
         drawerContent = {
             OfficialWebsitesDrawerContent(
                 onSelectPortal = { portal ->
-                    CustomTabsHelper.openNewsArticle(context, portal.siteUrl, dynamicToolbarColor)
+                    val activity = context.findActivity()
+                    if (activity != null) {
+                        AdManager.handleUserClick(activity) {
+                            CustomTabsHelper.openNewsArticle(context, portal.siteUrl, dynamicToolbarColor)
+                        }
+                    } else {
+                        CustomTabsHelper.openNewsArticle(context, portal.siteUrl, dynamicToolbarColor)
+                    }
                     coroutineScope.launch { drawerState.close() }
                 },
                 onCloseDrawer = {
@@ -281,7 +290,14 @@ fun MainScreen(
                             uiState = uiState,
                             onCategorySelect = { viewModel.selectCategory(it) },
                             onArticleClick = { article ->
-                                CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                val activity = context.findActivity()
+                                if (activity != null) {
+                                    AdManager.handleUserClick(activity) {
+                                        CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                    }
+                                } else {
+                                    CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                }
                             },
                             onBookmarkClick = { article ->
                                 viewModel.toggleBookmark(article)
@@ -294,7 +310,14 @@ fun MainScreen(
                         BookmarksScreen(
                             bookmarkedArticles = bookmarkedArticles,
                             onArticleClick = { article ->
-                                CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                val activity = context.findActivity()
+                                if (activity != null) {
+                                    AdManager.handleUserClick(activity) {
+                                        CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                    }
+                                } else {
+                                    CustomTabsHelper.openNewsArticle(context, article.link, dynamicToolbarColor)
+                                }
                             },
                             onRemoveBookmark = { article ->
                                 viewModel.removeBookmark(article.link)
@@ -311,8 +334,16 @@ fun MainScreen(
                     AppNavTab.TOPICS -> {
                         TopicsScreen(
                             onTopicClick = { topicKeyword ->
-                                viewModel.searchTopic(topicKeyword)
-                                currentTab = AppNavTab.FEED
+                                val activity = context.findActivity()
+                                if (activity != null) {
+                                    AdManager.handleUserClick(activity) {
+                                        viewModel.searchTopic(topicKeyword)
+                                        currentTab = AppNavTab.FEED
+                                    }
+                                } else {
+                                    viewModel.searchTopic(topicKeyword)
+                                    currentTab = AppNavTab.FEED
+                                }
                             }
                         )
                     }
