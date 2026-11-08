@@ -8,12 +8,12 @@ package com.example.ad
  */
 object AdConfig {
     // TopOn App ID & App Key resmi dari TopOn (aktif dan terdaftar di server mediasi)
-    const val TOPON_APP_ID = "a5aa1f9deda26d"
-    const val TOPON_APP_KEY = "4f7b9ac17decb9babec83aac078742c7"
+    const val TOPON_APP_ID = "h6aedf2fbc940c"
+    const val TOPON_APP_KEY = "a7fdeff07720eef7c7473235707ddf3d0"
 
     // TopOn Placement IDs resmi (Hanya Interstitial dan Native Ad sesuai permintaan pengguna)
-    const val PLACEMENT_INTERSTITIAL = "b5baca53984692"
-    const val PLACEMENT_NATIVE = "b5aa1fa2cae775"
+    const val PLACEMENT_INTERSTITIAL = "n6aef3a1524ca3"
+    const val PLACEMENT_NATIVE = "n6aef398145b52"
 
     // Target jeda klik berkelanjutan untuk iklan Interstitial (Tepat 15 klik)
     const val INTERSTITIAL_CLICK_TARGET = 15
